@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Colección de Música</title>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --text-color: #ffffff;
+      --accent-color: #1db954;
+      --secondary-text: #b3b3b3;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Reproductor Principal */
+    .player-card {
+      background-color: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .now-playing {
+      font-size: 0.9em;
+      color: var(--secondary-text);
+      margin-bottom: 5px;
+    }
+
+    .song-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    audio {
+      width: 100%;
+      outline: none;
+    }
+
+    /* Lista de Canciones */
+    .playlist {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .song-item {
+      background-color: var(--card-bg);
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .song-item:hover {
+      background-color: #2a2a2a;
+    }
+
+    .song-item.active {
+      border-left: 4px solid var(--accent-color);
+      color: var(--accent-color);
+    }
+
+    .download-link {
+      color: var(--secondary-text);
+      text-decoration: none;
+      font-size: 0.85em;
+      padding: 4px 8px;
+      border: 1px solid var(--secondary-text);
+      border-radius: 4px;
+    }
+
+    .download-link:hover {
+      color: var(--text-color);
+      border-color: var(--text-color);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🎧 Mi Biblioteca MP3</h1>
+
+    <!-- Reproductor de Audio -->
+    <div class="player-card">
+      <div class="now-playing">Reproduciendo ahora:</div>
+      <div class="song-title" id="current-title">Selecciona una canción</div>
+      <audio id="audio-player" controls>
+        Tu navegador no soporta el elemento de audio.
+      </audio>
+    </div>
+
+    <!-- Lista de Canciones -->
+    <ul class="playlist" id="playlist">
+      <!-- Las canciones se configuran en el array de JS más abajo -->
+    </ul>
+  </div>
+
+  <script>
+    // 1. Añade aquí la lista de tus canciones almacenadas en el repositorio
+    const canciones = [
+      {
+        titulo: "Canción de Ejemplo 1",
+        archivo: "musica/cancion1.mp3"
+      },
+      {
+        titulo: "Canción de Ejemplo 2",
+        archivo: "musica/cancion2.mp3"
+      }
+    ];
+
+    const audioPlayer = document.getElementById('audio-player');
+    const currentTitle = document.getElementById('current-title');
+    const playlistElement = document.getElementById('playlist');
+
+    // Cargar la lista en el HTML
+    canciones.forEach((cancion, index) => {
+      const li = document.createElement('li');
+      li.className = 'song-item';
+      li.innerHTML = `
+        <span>${cancion.titulo}</span>
+        <a href="${cancion.archivo}" download class="download-link" onclick="event.stopPropagation()">Descargar</a>
+      `;
+
+      // Evento para reproducir al hacer clic en la canción
+      li.addEventListener('click', () => {
+        reproducirCancion(index);
+      });
+
+      playlistElement.appendChild(li);
+    });
+
+    function reproducirCancion(index) {
+      const cancion = canciones[index];
+      audioPlayer.src = cancion.archivo;
+      currentTitle.textContent = cancion.titulo;
+      
+      // Actualizar clase 'active' en la lista
+      const items = document.querySelectorAll('.song-item');
+      items.forEach(item => item.classList.remove('active'));
+      items[index].classList.add('active');
+
+      audioPlayer.play();
+    }
+  </script>
+</body>
+</html>
